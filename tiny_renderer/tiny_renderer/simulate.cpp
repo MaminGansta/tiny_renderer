@@ -64,8 +64,3 @@ void triangle(Vec3f* pts, Vec2i* uv, float* zbuffer, Render_State* surface, Mode
 		}
 	}
 }
-
-void frame(Render_State* serface)
-{
-
-}

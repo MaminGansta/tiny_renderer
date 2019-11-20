@@ -145,14 +145,10 @@
     <ClInclude Include="geometry.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="simulate.h" />
-    <ClInclude Include="Log\log.h" />
     <ClInclude Include="render_stuff.h" />
     <ClInclude Include="tgaimage.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="vector.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="Log\log.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

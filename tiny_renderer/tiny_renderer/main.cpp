@@ -2,11 +2,13 @@
 #include "Timer.h"
 #include "render_stuff.h"
 #include "simulate.h"
+#include "geometry.h"
 #include "Model.h"
 #include "vector.h"
-#include "Log/log.h"
 
 using namespace m::Timer;
+
+
 Render_State surface;
 bool running = true;
 
@@ -58,6 +60,9 @@ LRESULT CALLBACK win_callback(HWND hwnd, UINT uMsg, WPARAM wparam, LPARAM lParam
 }
 
 
+
+
+
 int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPiv, LPSTR args, int someshit)
 {
 	// create window class
@@ -78,6 +83,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPiv, LPSTR args, int someshit)
 	//Model model("obj/diablo3_pose/diablo3_pose.obj");
 	float* zbuffer = new float[surface.width * surface.height];
 
+
 	timer_init();
 	while (running)
 	{
@@ -93,6 +99,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPiv, LPSTR args, int someshit)
 		Vec3f light_dir(0, 0, -1);
 		for (int i = surface.width * surface.height; i--;)
 			zbuffer[i] = -std::numeric_limits<float>::max();
+
 
 		for (int i = 0; i < model.nfaces(); i++) {
 			m::vector<int> face = model.face(i);
@@ -125,11 +132,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPiv, LPSTR args, int someshit)
 		timer_update();
 
 		// Log
-		add_log(std::to_string(nFPS));
-
-		if (time_from_init() > 1000000)
-			dump_log();
-
+		
 	}
 		
 	return 0;

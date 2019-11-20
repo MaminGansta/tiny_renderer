@@ -1,5 +1,8 @@
 #pragma once
 #include <cmath>
+#include <cstdint>
+
+#define PI 3.14159265359
 
 template <typename T>
 struct Vec2
@@ -130,4 +133,69 @@ inline void cproduct(Vec3<T> a, Vec3<T> b, Vec3<T>* res)
 template <typename T>
 Vec3<T> cross(Vec3<T> v1, Vec3<T> v2) {
 	return Vec3<T>(v1.y * v2.z - v1.z * v2.y, v1.z * v2.x - v1.x * v2.z, v1.x * v2.y - v1.y * v2.x);
+}
+
+template<typename T>
+class Matrix44
+{
+public:
+	T m[4][4] = { {1,0,0,0},{0,1,0,0},{0,0,1,0},{0,0,0,1} };
+
+	Matrix44() {}
+
+	const T* operator [] (uint8_t i) const { return m[i]; }
+	T* operator [] (uint8_t i) { return m[i]; }
+
+	Matrix44 operator * (const Matrix44& rhs) const
+	{
+		Matrix44 mult;
+		for (uint8_t i = 0; i < 4; ++i)
+		{
+			for (uint8_t j = 0; j < 4; ++j)
+			{
+				mult[i][j] = m[i][0] * rhs[0][j] +
+							 m[i][1] * rhs[1][j] +
+							 m[i][2] * rhs[2][j] +
+							 m[i][3] * rhs[3][j];
+			}
+		}
+
+		return mult;
+	}
+};
+
+typedef Matrix44<float> Matrix44f;
+
+template <typename T>
+inline Matrix44<T> ratate_x(float angle)
+{
+	
+}
+
+
+template <typename T>
+Vec3<T> rotateX(Vec3<T> v, float r)
+{
+	float x = r;
+	v.y = v.y * cos(x) + v.z * -sin(x);
+	v.z = v.y * sin(x) + v.z * cos(x);
+	return v;
+}
+
+template <typename T>
+Vec3<T> rotateY(Vec3<T> v, float r)
+{
+	float x = r;
+	v.x = v.x * cos(x) + v.z * -sin(x);
+	v.z = v.x * sin(x) + v.z * cos(x);
+	return v;
+}
+
+template <typename T>
+Vec3<T> rotateZ(Vec3<T> v, float r)
+{
+	float x = r;
+	v.x = v.x * cos(x) + v.y * -sin(x);
+	v.y = v.x * sin(x) + v.y * cos(x);
+	return v;
 }
