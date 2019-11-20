@@ -1,13 +1,26 @@
 #include <windows.h>
-#include "simulate.h"
-#include "geometry.h"
-#include "Model.h"
+
+//#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <vector>
+#include <string>
+#include <stdint.h>
+
+#include "stb_image.h"
 
 
+
+// Global varibals
 bool running = true;
 
+
+// Unity build
 #include "render_stuff.cpp"
 #include "geometry.cpp"
+#include "image.cpp"
+#include "model.cpp"
+#include "timer.cpp"
 
 
 
@@ -54,8 +67,6 @@ LRESULT CALLBACK win_callback(HWND hwnd, UINT uMsg, WPARAM wparam, LPARAM lParam
 
 
 
-
-
 int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPiv, LPSTR args, int someshit)
 {
 	// create window class
@@ -68,7 +79,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPiv, LPSTR args, int someshit)
 	RegisterClass(&window_class);
 
 	// create window
-	HWND window = CreateWindow(window_class.lpszClassName, "Game!!!", WS_OVERLAPPEDWINDOW | WS_VISIBLE, CW_USEDEFAULT, CW_USEDEFAULT, win_width, win_height, 0, 0, hInst, 0);
+	HWND window = CreateWindow(window_class.lpszClassName, "Game!!!", WS_OVERLAPPEDWINDOW | WS_VISIBLE, CW_USEDEFAULT, CW_USEDEFAULT, 800, 600, 0, 0, hInst, 0);
 	HDC hdc = GetDC(window);
 
 	// Model
@@ -77,7 +88,8 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPiv, LPSTR args, int someshit)
 	float* zbuffer = new float[surface.width * surface.height];
 
 
-	timer_init();
+	Timer timer;
+
 	while (running)
 	{
 		// Input
@@ -95,7 +107,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPiv, LPSTR args, int someshit)
 
 
 		for (int i = 0; i < model.nfaces(); i++) {
-			m::vector<int> face = model.face(i);
+			std::vector<int> face = model.face(i);
 			Vec3f screen_coords[3];
 			Vec3f world_coords[3];
 			for (int j = 0; j < 3; j++) {
@@ -122,7 +134,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPiv, LPSTR args, int someshit)
 
 
 		// Timer
-		timer_update();
+		timer.update();
 
 		// Log
 		

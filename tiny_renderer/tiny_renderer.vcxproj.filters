@@ -21,9 +21,6 @@
     <ClCompile Include="draw.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="simulate.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="model.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -35,9 +32,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Timer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="file.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -51,6 +45,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="geometry.cpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="timer.cpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

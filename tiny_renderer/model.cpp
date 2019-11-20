@@ -1,9 +1,3 @@
-#include <iostream>
-#include <string>
-#include <fstream>
-#include <sstream>
-#include "geometry.h"
-#include <vector>
 
 //
 //class Model {
