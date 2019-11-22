@@ -1,14 +1,17 @@
 #include <windows.h>
+#include <stdint.h>
+#include <math.h>
+#include <cstring>
 
-//#include <iostream>
+
+// STL
 #include <fstream>
 #include <sstream>
 #include <vector>
 #include <string>
-#include <stdint.h>
 
+#define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
-
 
 
 // Global varibals
@@ -20,6 +23,7 @@ bool running = true;
 #include "geometry.cpp"
 #include "image.cpp"
 #include "model.cpp"
+#include "draw.cpp"
 #include "timer.cpp"
 
 
@@ -83,7 +87,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPiv, LPSTR args, int someshit)
 	HDC hdc = GetDC(window);
 
 	// Model
-	Model model("obj/african_head.obj");
+	Model model("obj/african_head");
 	//Model model("obj/diablo3_pose/diablo3_pose.obj");
 	float* zbuffer = new float[surface.width * surface.height];
 
@@ -106,7 +110,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPiv, LPSTR args, int someshit)
 			zbuffer[i] = -std::numeric_limits<float>::max();
 
 
-		for (int i = 0; i < model.nfaces(); i++) {
+		for (int i = 0; i < model.faces(); i++) {
 			std::vector<int> face = model.face(i);
 			Vec3f screen_coords[3];
 			Vec3f world_coords[3];
@@ -125,7 +129,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPiv, LPSTR args, int someshit)
 				for (int k = 0; k < 3; k++)
 					uv[k] = model.uv(i, k);
 
-				triangle(screen_coords, uv, zbuffer, &surface, &model, intensity);
+				triangle(screen_coords, uv, zbuffer, model, intensity);
 			}
 		}
 
