@@ -95,7 +95,11 @@ void triangle(Vec3f* pts, Vec2i* uv, float* zbuffer, Model& model, float intensi
 		for (int j = 0; j < 2; j++)
 		{
 			bot_left[j] = MAX(0.0f, MIN(bot_left[j], pts[i][j]));
-			top_right[j] = MIN(surface.height, MAX(top_right[j], pts[i][j]));
+			if (j == 1)
+				top_right[j] = MIN(surface.height, MAX(top_right[j], pts[i][j]));
+			else
+				top_right[j] = MIN(surface.width, MAX(top_right[j], pts[i][j]));
+
 		}
 	}
 	Vert3i P;
@@ -116,7 +120,7 @@ void triangle(Vec3f* pts, Vec2i* uv, float* zbuffer, Model& model, float intensi
 					uvP.x = uv[0].x * bar[0] + uv[1].x * bar[1] + uv[2].x * bar[2];
 					uvP.y = uv[0].y * bar[0] + uv[1].y * bar[1] + uv[2].y * bar[2];
 
-					Color color = model.diffuse_(uvP);
+					Color color = model.diffuse(uvP);
 					zbuffer[int(P.x + P.y * surface.width)] = z;
 					for (int i = 0; i < 4; i++)
 						color.raw[i] *= intensity;
