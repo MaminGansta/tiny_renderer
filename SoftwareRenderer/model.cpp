@@ -53,30 +53,35 @@ public:
 
 	inline ~Model() {}
 
-
-	int verts() {
+	int verts()
+	{
 		return (int)verts_.size();
 	}
 
-	int faces() {
+	int faces()
+	{
 		return (int)faces_.size();
 	}
 
-	std::vector<int> face(int idx) {
+	std::vector<int> face(int idx)
+	{
 		std::vector<int> face;
 		for (int i = 0; i < (int)faces_[idx].size(); i++) face.push_back(faces_[idx][i][0]);
 		return face;
 	}
 
-	Vec3f vert(int i) {
+	Vec3f vert(int i)
+	{
 		return verts_[i];
 	}
 
-	Color diffuse(Vec2i& uv) {
+	Color diffuse(Vec2i& uv)
+	{
 		return diffusemap_.get_pixel(uv);
 	}
 
-	Vec2i uv(int iface, int nvert) {
+	Vec2i uv(int iface, int nvert)
+	{
 		int idx = faces_[iface][nvert][1];
 		return Vec2i(uv_[idx].x * diffusemap_.w, uv_[idx].y * diffusemap_.h);
 	}
