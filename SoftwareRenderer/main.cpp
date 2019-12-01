@@ -100,8 +100,8 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPiv, LPSTR args, int someshit)
 	HDC hdc = GetDC(window);
 
 	// Model
-	Model model("obj/african_head");
-	//Model model("obj/diablo3_pose/diablo3_pose");
+	//Model model("obj/african_head");
+	Model model("obj/diablo3_pose/diablo3_pose");
 
 	// zBuffer
 	float* zbuffer = new float[surface.width * surface.height];
@@ -209,15 +209,36 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPiv, LPSTR args, int someshit)
 
 		// Simulate
 
-		// light 
-		//Vec3f light_dir(0, 0, -1);
-
 		// update z buffer
 		for (int i = surface.width * surface.height; i--;)
 			zbuffer[i] = -std::numeric_limits<float>::max();
 
 
 		// camera
+		if (Kinput.buttons[BUTTON_UP].is_down)
+		{
+			eye_z -= 0.2;
+			center_z -= 0.2;
+		}
+
+		if (Kinput.buttons[BUTTON_DOWN].is_down)
+		{
+			center_z += 0.2;
+			eye_z += 0.2;
+		}
+		
+		if (Kinput.buttons[BUTTON_LEFT].is_down)
+		{
+			center_x -= 0.05;
+			eye_x -= 0.05;
+		}
+
+		if (Kinput.buttons[BUTTON_RIGHT].is_down)
+		{
+			center_x += 0.05;
+			eye_x += 0.05;
+		}
+
 		if (Kinput.buttons[BUTTON_UROTATE].is_down)
 			center_y += 0.02;
 
@@ -237,8 +258,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPiv, LPSTR args, int someshit)
 		Vec3f light_dir = Vec3f(0, 0, -1).normalize();
 		Vec3f eye(eye_x, eye_y, eye_z);
 		Vec3f center(center_x, center_y, center_z);
-		//Vec3f eye(1, 1, 3);
-		//Vec3f center(0, 0, 0);
+
 
 
 		Matrix44f ModelView = lookAt(eye, center);
@@ -272,14 +292,14 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPiv, LPSTR args, int someshit)
 			cproduct((world_coords[2] - world_coords[0]), (world_coords[1] - world_coords[0]), &n);
 			n.normalizeYourself();
 			float intensity = dproduct(n, light_dir);
-			if (intensity > 0)
-			{
-				Vec2i uv[3];
-				for (int k = 0; k < 3; k++)
-					uv[k] = model.uv(i, k);
 
-				triangle(screen_coords, uv, zbuffer, model, intensity);
-			}
+			intensity = intensity < 0 ? 0.1 : intensity;
+
+			Vec2i uv[3];
+			for (int k = 0; k < 3; k++)
+				uv[k] = model.uv(i, k);
+
+			triangle(screen_coords, uv, zbuffer, model, intensity);
 		}
 
 		// Render
