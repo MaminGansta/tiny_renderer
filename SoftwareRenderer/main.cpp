@@ -30,6 +30,8 @@ const int width = 800;
 const int height = 800;
 const int depth = 255;
 
+// headers
+
 // Unity build
 #include "render_stuff.cpp"
 #include "geometry.cpp"
@@ -38,6 +40,8 @@ const int depth = 255;
 #include "draw.cpp"
 #include "input.cpp"
 #include "timer.cpp"
+#include "camera.cpp"
+
 
 
 
@@ -96,7 +100,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPiv, LPSTR args, int someshit)
 	RegisterClass(&window_class);
 
 	// create window
-	HWND window = CreateWindow(window_class.lpszClassName, "Game!!!", WS_OVERLAPPEDWINDOW | WS_VISIBLE, CW_USEDEFAULT, CW_USEDEFAULT, width, height, 0, 0, hInst, 0);
+	HWND window = CreateWindow(window_class.lpszClassName, "Game", WS_OVERLAPPEDWINDOW | WS_VISIBLE, CW_USEDEFAULT, CW_USEDEFAULT, width, height, 0, 0, hInst, 0);
 	HDC hdc = GetDC(window);
 
 	// Model
@@ -107,14 +111,9 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPiv, LPSTR args, int someshit)
 	float* zbuffer = new float[surface.width * surface.height];
 
 
-	// movement variables
-	float eye_x = 1;
-	float eye_y = 1;
-	float eye_z = 3;
+	// variables camera
+	Camera camera{ {1, 1, 3}, {0, 0 , 0} };
 
-	float center_x = 0;
-	float center_y = 0;
-	float center_z = 0;
 
 	// input
 	Key_input Kinput;
@@ -214,57 +213,44 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPiv, LPSTR args, int someshit)
 			zbuffer[i] = -std::numeric_limits<float>::max();
 
 
-		// camera
+		// camera movement
 		if (Kinput.buttons[BUTTON_UP].is_down)
-		{
-			eye_z -= 0.2;
-			center_z -= 0.2;
-		}
+			camera.pos += camera.forward * timer.elapsed;
 
 		if (Kinput.buttons[BUTTON_DOWN].is_down)
-		{
-			center_z += 0.2;
-			eye_z += 0.2;
-		}
+			camera.pos -= camera.forward * timer.elapsed;
 		
 		if (Kinput.buttons[BUTTON_LEFT].is_down)
-		{
-			center_x -= 0.05;
-			eye_x -= 0.05;
-		}
-
+			camera.pos -= camera.right * timer.elapsed;
+		
 		if (Kinput.buttons[BUTTON_RIGHT].is_down)
-		{
-			center_x += 0.05;
-			eye_x += 0.05;
-		}
+			camera.pos += camera.right * timer.elapsed;
 
+
+		// camera rotation
 		if (Kinput.buttons[BUTTON_UROTATE].is_down)
-			center_y += 0.02;
+			camera.pitch += 2 * timer.elapsed;
 
 		if (Kinput.buttons[BUTTON_DROTATE].is_down)
-			center_y -= 0.02;
+			camera.pitch -= 2 * timer.elapsed;
 		
-		if (Kinput.buttons[BUTTON_LROTATE].is_down)
-			center_x -= 0.02;
-
+		
 		if (Kinput.buttons[BUTTON_RROTATE].is_down)
-			center_x += 0.02;
+			camera.yaw += 2 * timer.elapsed;
 
-
+		if (Kinput.buttons[BUTTON_LROTATE].is_down)
+			camera.yaw -= 2 * timer.elapsed;
 
 
 		// Calculat the matrixes
 		Vec3f light_dir = Vec3f(0, 0, -1).normalize();
-		Vec3f eye(eye_x, eye_y, eye_z);
-		Vec3f center(center_x, center_y, center_z);
 
-
-
-		Matrix44f ModelView = lookAt(eye, center);
+		camera.direction();
+		camera.basis();
+		Matrix44f ModelView = camera.lookAt();//lookAt( camera.pos + camera.forward, camera.pos);//camera.lookAt();
 		Matrix44f Projection(identity);
 		Matrix44f ViewPort = viewport(width / 8, height / 8, width * 3 / 4, height * 3 / 4);
-		Projection[3][2] = -1.f / eye.norm();
+		Projection[3][2] = -1.f / camera.pos.norm();
 
 
 
@@ -309,8 +295,9 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPiv, LPSTR args, int someshit)
 		timer.update();
 		
 		// Log
-		char log[32];
-		sprintf_s(log, "fps: %d ftime: %.3f sec\n", timer.FPS, timer.elapsed);
+		char log[128];
+		sprintf_s(log, "fps: %d ftime: %.3f sec   forward: %.2f %.2f %.2f:  pos: %.2f %.2f %.2f\n",
+			timer.FPS, timer.elapsed, camera.forward.x, camera.forward.y, camera.forward.z, camera.pos.x, camera.pos.y, camera.pos.z);
 		OutputDebugString(log);
 	}
 		

@@ -410,7 +410,8 @@ typedef Matrix44<float> Matrix44f;
 //	return camToWorld;
 //}
 
-Matrix44f lookAt(Vec3f eye, Vec3f center, Vec3f up = Vec3f(0, 1, 0)) {
+Matrix44f lookAt(Vec3f eye, Vec3f center, Vec3f up = Vec3f(0, 1, 0))
+{
 	Vec3f z = (eye - center).normalize();
 	Vec3f x = cross(up, z).normalize();
 	Vec3f y = cross(z, x).normalize();
